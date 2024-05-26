@@ -78,7 +78,7 @@
       moveSelectedItem(direction) {
         if (!this.currentItem) return;
   
-        if (direction === 'right' && !this.selectedItems.includes(this.currentItem)) {
+        if (direction === 'right' && !this.selectedItems.some(item => item.id === this.currentItem.id)) {
           this.selectedItems.push({ ...this.currentItem, numbering: this.selectedItems.length + 1 });
         } else if (direction === 'left' && this.currentTable === 'right') {
           this.selectedItems = this.selectedItems.filter(item => item.id !== this.currentItem.id);
