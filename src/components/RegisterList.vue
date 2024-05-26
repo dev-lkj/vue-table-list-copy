@@ -79,9 +79,10 @@
         if (!this.currentItem) return;
   
         if (direction === 'right' && !this.selectedItems.includes(this.currentItem)) {
-          this.selectedItems.push(this.currentItem);
+          this.selectedItems.push({ ...this.currentItem, numbering: this.selectedItems.length + 1 });
         } else if (direction === 'left' && this.currentTable === 'right') {
           this.selectedItems = this.selectedItems.filter(item => item.id !== this.currentItem.id);
+          this.renumberItems();
           this.currentItem = null;
           this.currentIndex = null;
           return;
@@ -91,7 +92,7 @@
           this.moveDown();
         } else if (direction === 'top' && this.currentTable === 'right') {
           this.moveToTop();
-        } else if (direction === 'last' && this.currentTable === 'left') {
+        } else if (direction === 'last' && this.currentTable === 'right') {
           this.moveToLast();
         }
       },
@@ -100,6 +101,7 @@
           const item = this.selectedItems.splice(this.currentIndex, 1)[0];
           this.selectedItems.splice(this.currentIndex - 1, 0, item);
           this.currentIndex--;
+          this.renumberItems();
         }
       },
       moveDown() {
@@ -107,6 +109,7 @@
           const item = this.selectedItems.splice(this.currentIndex, 1)[0];
           this.selectedItems.splice(this.currentIndex + 1, 0, item);
           this.currentIndex++;
+          this.renumberItems();
         }
       },
       moveToTop() {
@@ -114,16 +117,32 @@
           const item = this.selectedItems.splice(this.currentIndex, 1)[0];
           this.selectedItems.unshift(item);
           this.currentIndex = 0;
+          this.renumberItems();
         }
       },
       moveToLast() {
-        if (this.currentItem && this.currentTable === 'left') {
-          this.selectedItems.push(this.currentItem);
-          this.currentIndex = this.selectedItems.length - 1;
+        if (this.currentIndex !== null) {
+          const item = this.selectedItems.splice(this.currentIndex, 1)[0];
+          this.selectedItems.push(item);
+          this.currentIndex = this.selectedItems.length -1 ;
+          //alert(this.selectedItems.length)
+          //alert(this.currentIndex);
+          this.renumberItems();
         }
       },
+      renumberItems() {
+        this.selectedItems.forEach((item, index) => {
+          item.numbering = index + 1;
+        });
+      },
       saveSelectedItems() {
-        this.$emit('save-items', this.selectedItems);
+        const sortedItems = [...this.selectedItems].sort((a, b) => {
+          if (a.numbering === b.numbering) {
+            return new Date(a.createdAt) - new Date(b.createdAt);
+          }
+          return a.numbering - b.numbering;
+        });
+        this.$emit('save-items', sortedItems);
       }
     },
   };
