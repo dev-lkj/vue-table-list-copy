@@ -5,18 +5,25 @@
     <hr/>
     <br/><br/><br/>
     <the-table :items="savedItems"></the-table>
+    <rest-template></rest-template>
+    <h4>Upload Image</h4>
+    <upload-image></upload-image>
   </div>
 </template>
 
 <script>
 import RegisterList from './components/RegisterList.vue';
 import TheTable from './components/TheTable.vue';
+import RestTemplate from './components/RestTemplate.vue';
+import UploadImage from './components/UploadImage.vue';
 
 export default {
   name: 'App',
   components: {
     TheTable,
     RegisterList,
+    RestTemplate,
+    UploadImage,
   },
   data() {
     return {
